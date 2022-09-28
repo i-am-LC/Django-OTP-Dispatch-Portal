@@ -1,0 +1,221 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="wrapper">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h3>Client Detail</h3>
+                <a href="{% url 'client_update' pk=object.pk %}" class="btn btn-primary">Update</a>
+                <a href="{% url 'client_delete' pk=object.pk %}" class="btn btn-danger">Delete</a>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">General</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h5>{{ object.company_name }}</h5>
+                                <small class="text-muted">Company name</small>
+                            </div>
+                            <div class="col-md-4">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h5 class="card-title">Authorised Representatives</h5>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="float-sm-right">
+                                    <a class="btn btn-primary btn-sm" href="{% url 'auth_rep_create' client=object.pk %}">
+                                        <i class="fas fa-pencil-alt"></i>
+                                        Add
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th scope="col">Name</th>
+                                <th scope="col">Role</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Mobile</th>
+                                <th scope="col">Country</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for auth_rep in auth_reps %}
+                            {% if auth_rep.active is True %}
+                            <tr class="">
+                                <td>{{ auth_rep.firstname }} {{ auth_rep.surname }}</td>
+                                <td>{{ auth_rep.role }} </td>
+                                <td>{{ auth_rep.email }} </td>
+                                <td>{{ auth_rep.mobile }}</td>
+                                <td>{{ auth_rep.country }}</td>
+                                <td class="project-actions text-right">
+                                    <a class="btn btn-info btn-sm"
+                                       href="{% url 'auth_rep_update' client=auth_rep.company.pk pk=auth_rep.pk %}">
+                                        <i class="fas fa-pencil-alt"></i> Edit
+                                    </a>
+                                </td>
+                            </tr>
+                            {% elif auth_rep.active is False %}
+                            <tr class="text-muted">
+                                <td>{{ auth_rep.firstname }} {{ auth_rep.surname }}</td>
+                                <td>{{ auth_rep.role }} </td>
+                                <td>{{ auth_rep.email }} </td>
+                                <td>{{ auth_rep.mobile }}</td>
+                                <td>{{ auth_rep.country }}</td>
+                                <td class="project-actions text-right">
+                                    <span class="badge badge-secondary">Inactive</span>
+                                    <a class="btn btn-info btn-sm"
+                                       href="{% url 'auth_rep_update' client=auth_rep.company.pk pk=auth_rep.pk %}">
+                                        <i class="fas fa-pencil-alt"></i> Edit
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <form method="post" novalidate>
+                            {% csrf_token %}
+                            <div class="form-row">
+                                <div class="col-6">
+                                    {{ form.auth_rep|as_crispy_field }}
+                                </div>
+                                <div class="col-6">
+                                    {{ form.destination|as_crispy_field }}
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col">
+                                    {{ form.reason|as_crispy_field }}
+                                </div>
+                            </div>
+                            <div  class=" row d-flex justify-content-center align-content-center " >
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                            <h5 class="card-title">OTP History</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Created</th>
+                                <th scope="col">Created by</th>
+                                <th scope="col">Destination</th>
+                                <th scope="col">Reason</th>
+                                <th scope="col">Verified</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for otp_record in otp_history %}
+                            <tr>
+                                <td>{{ otp_record.id }}</th>
+                                <td>{{ otp_record.created }} </td>
+                                <td>{{ otp_record.created_by }}</td>
+                                <td>{{ otp_record.dest_value }}</td>
+                                <td>{{ otp_record.get_reason_display }}</td>
+                                <td>
+                                    {% if otp_record.verified is True %}
+                                    <ul class="list-inline">
+                                        <li><span class="badge badge-primary">True</span></li>
+                                        <li><small class="">Verifed: {{ otp_record.verified_datetime }}</small></li>
+                                    </ul>
+                                    {% else %}
+                                    {% if now|date:"YmdHis" < otp_record.expire_time|date:"YmdHis" %}
+                                    <ul class="list-inline">
+                                        <li><a href="{% url 'otp_verification_page' pk=otp_record.id %}" class="btn btn-primary">Verify</a></li>
+                                        <li><small class="">Expires in: {{ otp_record.expire_time|timeuntil }}</small></li>
+                                    </ul>
+                                    {% else %}
+                                    <ul class="list-inline">
+                                        <li><span class="badge badge-danger">False</span></li>
+                                        <li><span class="badge badge-danger">Expired</span></li>
+                                        <li><small class="">Expired: {{ otp_record.expire_time }}</small></li>
+                                    </ul>
+                                    {% endif %}
+                                    {% endif %}
+                                </td>
+                            {% endfor %}
+                            </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+function makeTimer() {
+   var endTime=new Date({{ obj.expire_time|date:"U" }} * 1000);
+    endTime = (Date.parse(endTime) / 1000);
+
+        var now = new Date();
+        now = (Date.parse(now) / 1000);
+
+        var timeLeft = endTime - now;
+
+        var days = Math.floor(timeLeft / 86400);
+        var hours = Math.floor((timeLeft - (days * 86400)) / 3600);
+        var minutes = Math.floor((timeLeft - (days * 86400) - (hours * 3600 )) / 60);
+        var seconds = Math.floor((timeLeft - (days * 86400) - (hours * 3600) - (minutes * 60)));
+
+        if (hours < "10") { hours = "0" + hours; }
+        if (minutes < "10") { minutes = "0" + minutes; }
+        if (seconds < "10") { seconds = "0" + seconds; }
+
+        if (now < endTime)
+        {
+        $("#minutes").html(minutes + "");
+        $("#seconds").html(seconds + "");
+        }
+        if (now > endTime)
+        {
+        $("#minutes").html("0");
+        $("#seconds").html("0");
+        window.location.reload();
+        }
+
+}
+setInterval(function() { makeTimer(); }, 1000);
+</script>
+{% endblock %}

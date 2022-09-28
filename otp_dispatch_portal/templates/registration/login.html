@@ -1,24 +1,30 @@
-{% extends "dashboard/base.html" %}
+{% extends "base.html" %}
 {% block no_auth_content %}
 {% load crispy_forms_tags %}
-<div class="row">
-    <div class="col-md-12">
-      <a href="{% url 'dashboard' %}">
-        <h3 class="text-center">
-          <i class="fas fa-copyright"></i>
-        </h3>
-      </a>
-      <form class="" novalidate method="post" action="{% url 'login' %}">
-        {% csrf_token %}
-        {{ form|crispy }}
-        <button type="submit" class="btn btn-primary">Sign in</button>
-      </form>
-      <br>
-      <small class="text-muted">Forgot your <a href="{% url 'password_reset' %}">password</a>?</small>
-      <!-- Signup process not included.
-      <br>
-      <small class="text-muted">New to Babylon? <a href="">Sign up!</a></small>
-      -->
-    </div>
+<div class="wrapper pt-5">
+  <div class="row align-items-center">
+    <div class="col-lg-3 col-md-6 col-10 mx-auto text-center">
+      <div class="text-center mb-3">
+        <a href="{% url 'login' %}">
+          <h4>
+            <b>Django</b>
+            <small> OTP Dispatcher</small>
+          </h4>
+        </a>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <p class="">Sign in to start your session</p>
+          <form method="post" novalidate>
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+          </form>
+          <p class="mt-3">
+            <a href="{% url 'password_reset' %}">I forgot my password</a>
+          </p>
+        </div>
+      </div>
+  </div>
 </div>
 {% endblock %}

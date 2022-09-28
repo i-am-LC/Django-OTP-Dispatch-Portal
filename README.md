@@ -24,7 +24,8 @@
 ## Introduction
 Django OTP Dispatch Portal was developed in response to a change in telecommunication standards within Australia. 
 Specifically the tightening of acceptable customer authentication methods 
-when porting mobile numbers to a new provider with the aim of protecting against unauthorised 'SIM swaps'.
+when porting mobile numbers to a new provider with the aim of protecting against unauthorised 'SIM swaps' or undertaking 
+any actions deemed to be 'high risk' by the Australian Communications and Media Authority.
 
 In order to meet these new requirements customers would need to be sent a 
 unique one time passcode (OTP), this code would need to be 
@@ -35,7 +36,9 @@ validated before any work could take place and finally records of the authentica
   * Login / Logout
   * Password reset
   * Login required views
+* Creation of client accounts and associated authorised representatives for whom OTPs will be directed to.
 * One time unique passcode creation
+* SMS or Email OTP dispatch
 * Dispatch SMS to any country.
 * Mobile number validation - ensuring the number provided matches country requirements.
 * One time passcode validation.
@@ -87,12 +90,12 @@ Once your project has been set up you can start the Django development server by
 5. Run `python manage.py runserver` to start the development server.
 6. Open your web browser and head to `http://127.0.0.1:8000/` as show in the CLI.
 7. Log in using the superuser credentials you created.
-8. To send an SMS simply enter the recipients mobile number and select the appropriate country. 
-   1. Should the number provided not meet the country requirements an error message will display.
-9. Upon successfully sending your OTP code you'll be directed to the verification page.
-   1. Each code expires five minutes from dispatch
-   2. Each code expires after three failed attempts to verify.
-10. Records of successful, failed and skipped codes can be located on the dashboard.
+8. Create a client account and add authorised representatives 
+   1. Should the mobile number provided not meet the country requirements an error message will display.
+9. Send either an SMS or email OTP code to an authorised representative by selecting them from the OTP dispatch dropdown.
+10. Each code expires five minutes from dispatch.
+11. Each code expires after three failed attempts to verify.
+12. Records of successful, failed or timed out codes can be viewed under the clients profile.
 
 ## Credits
 Sincerest thanks to the contributors of [phonenumbers Python Library](https://github.com/daviddrysdale/python-phonenumbers) and 
